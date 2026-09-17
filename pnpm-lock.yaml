@@ -120,6 +120,9 @@ importers:
       '@types/react':
         specifier: ^19.2.8
         version: 19.2.8
+      '@types/three':
+        specifier: ^0.186.0
+        version: 0.186.0
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.52.0
         version: 8.52.0(@typescript-eslint/parser@8.52.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
