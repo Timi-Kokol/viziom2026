@@ -1,10 +1,28 @@
 import { PROJECTS } from '@/content/projects';
 
-const FALLBACK_SITE_URL = 'https://viziom.si';
+const FALLBACK_SITE_URL = 'https://www.viziom.si';
+
+const toOrigin = (value: string) => {
+	const url = new URL(value.startsWith('http') ? value : `https://${value}`);
+	if (url.hostname === 'api.viziom.si') return null;
+	// Apex 308s to www; Facebook often drops og:image when that URL redirects.
+	if (url.hostname === 'viziom.si') return FALLBACK_SITE_URL;
+	return `${url.protocol}//${url.host}`.replace(/\/+$/, '');
+};
 
 export const getSiteUrl = () => {
-	const raw = process.env.NEXT_PUBLIC_SITE_URL?.trim() || FALLBACK_SITE_URL;
-	return raw.replace(/\/+$/, '');
+	const candidates = [process.env.NEXT_PUBLIC_SITE_URL, FALLBACK_SITE_URL];
+	for (const raw of candidates) {
+		const value = raw?.trim();
+		if (!value) continue;
+		try {
+			const origin = toOrigin(value);
+			if (origin) return origin;
+		} catch {
+			continue;
+		}
+	}
+	return FALLBACK_SITE_URL;
 };
 
 export const SITE = {
