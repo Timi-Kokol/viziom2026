@@ -191,7 +191,7 @@ export const MenuCtaWrap = styled.div`
 export const MenuCta = styled.button`
 	display: inline-flex;
 	align-items: center;
-	gap: 8px;
+	gap: 16px;
 	appearance: none;
 	margin: 0;
 	padding: 1.8rem 0;
@@ -215,6 +215,7 @@ export const MenuCta = styled.button`
 		flex: 0 0 5px;
 		width: 5px;
 		height: 5px;
+		margin-left: 4px;
 		border-radius: 100%;
 		background: ${brand};
 		box-shadow:

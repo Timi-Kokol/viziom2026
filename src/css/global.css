@@ -182,3 +182,10 @@ html *::after {
 	white-space: nowrap;
 	border: 0;
 }
+
+/* Cal.com modal: match host color-scheme so the iframe canvas stays transparent
+   instead of painting an opaque white backdrop behind the dark booker. */
+cal-modal-box,
+cal-modal-box iframe {
+	color-scheme: dark;
+}

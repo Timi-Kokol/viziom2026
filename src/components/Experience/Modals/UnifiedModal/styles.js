@@ -393,7 +393,7 @@ export const SidebarCTA = styled.div`
 export const CTAButton = styled.a`
 	display: inline-flex;
 	align-items: center;
-	gap: 8px;
+	gap: 16px;
 	appearance: none;
 	border: 0;
 	background: transparent;
@@ -419,6 +419,7 @@ export const CTAButton = styled.a`
 		flex: 0 0 5px;
 		width: 5px;
 		height: 5px;
+		margin-left: 4px;
 		border-radius: 100%;
 		background: ${(props) => props.theme?.colors?.brand?.bc5?.[100]};
 		box-shadow:

@@ -142,6 +142,9 @@ export function initCal() {
 	window.Cal('init', { origin: CAL_ORIGIN });
 	window.Cal('ui', {
 		theme: 'dark',
+		// Keep iframe color-scheme in sync with our dark page. Without this,
+		// the browser paints an opaque white canvas behind the booker.
+		colorScheme: 'dark',
 		hideEventTypeDetails: false,
 		cssVarsPerTheme: {
 			dark: {
@@ -164,6 +167,7 @@ export function openCalModal() {
 		config: {
 			theme: 'dark',
 			layout: 'month_view',
+			'ui.color-scheme': 'dark',
 		},
 	});
 }
