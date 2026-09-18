@@ -1042,20 +1042,23 @@ const Experience = () => {
 };
 
 function HintMessages({ currentScene, doorOpen, hasVisitedMinigame, hasOpenedAnyModal }) {
-	const { nearLasers } = useProximity();
+	const { nearLasers, nearbyCTA } = useProximity();
 	const isMain = currentScene === "main";
 	const showLasers = isMain && nearLasers && !doorOpen;
-	const showProgressHint = isMain && (!doorOpen || !hasVisitedMinigame) && !showLasers;
+	const showCtaView = isMain && !!nearbyCTA && !showLasers;
+	const showProgressHint = isMain && (!doorOpen || !hasVisitedMinigame) && !showLasers && !nearbyCTA;
 
 	return (
 		<>
 			<LasersMessage enabled={isMain} doorOpen={doorOpen} />
-			<GlobalMessage visible={showProgressHint} bottom={GLOBAL_MESSAGE_BOTTOM_VISIT_PODS}>
-				{!hasOpenedAnyModal
-					? "Visit the green circles to access content"
-					: !doorOpen
-						? "Drones' spotlight unlocks a hidden minigame"
-						: "Lasers are off, drop down the trap door to start the minigame"}
+			<GlobalMessage visible={showCtaView || showProgressHint} bottom={GLOBAL_MESSAGE_BOTTOM_VISIT_PODS}>
+				{nearbyCTA
+					? `View ${nearbyCTA.label}`
+					: !hasOpenedAnyModal
+						? "Visit the green circles to access content"
+						: !doorOpen
+							? "Drones' spotlight unlocks a hidden minigame"
+							: "Lasers are off, drop down the trap door to start the minigame"}
 			</GlobalMessage>
 		</>
 	);

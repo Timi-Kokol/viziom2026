@@ -39,7 +39,6 @@ const MinigameGuide = ({ position = [0, 0, 0], scale = [1, 1, 1], visible = fals
 	const frameMeshRef = useRef(null);
 	const curveBulgeRef = useRef(null);
 	const animationProgressRef = useRef(0);
-	const fadeInStartRef = useRef(null);
 	const fadeInRef = useRef(0);
 	const prevVisibleRef = useRef(visible);
 
@@ -62,27 +61,28 @@ const MinigameGuide = ({ position = [0, 0, 0], scale = [1, 1, 1], visible = fals
 	}, [actions]);
 
 	const gameplayPaused = useGameplayPaused();
-	useFrame((state, delta) => {
+	const pulseTimeRef = useRef(0);
+	useFrame((_, delta) => {
 		if (gameplayPaused) return;
+		// Modal sets Canvas frameloop to "never"; the first resume frame can be several
+		// seconds long and would skip the ~10s guide clip (line + orb vanish until it loops).
+		const dt = Math.min(Math.max(delta, 0), 1 / 20);
 		if (!visible) {
 			prevVisibleRef.current = false;
 			fadeInRef.current = 0;
 			return;
 		}
 		if (!prevVisibleRef.current) {
-			fadeInStartRef.current = state.clock.elapsedTime;
+			fadeInRef.current = 0;
 		}
 		prevVisibleRef.current = true;
-
-		const visibilityMultiplier = Math.min(
-			1,
-			(state.clock.elapsedTime - (fadeInStartRef.current ?? state.clock.elapsedTime)) / FADE_IN_DURATION
-		);
-		fadeInRef.current = visibilityMultiplier;
+		fadeInRef.current = Math.min(1, fadeInRef.current + dt / FADE_IN_DURATION);
+		const visibilityMultiplier = fadeInRef.current;
+		pulseTimeRef.current += dt;
 
 		if (mixer) {
 			mixer.timeScale = ANIMATION_SPEED;
-			mixer.update(delta);
+			mixer.update(dt);
 			const action = Object.values(actions || {})[0];
 			if (action?.getClip?.()) {
 				const clip = action.getClip();
@@ -93,7 +93,7 @@ const MinigameGuide = ({ position = [0, 0, 0], scale = [1, 1, 1], visible = fals
 		// Frame mesh alpha animation (GLB has no baked material opacity)
 		let frameOpacity = 1;
 		if (FRAME_ALPHA.enabled && frameMeshRef.current) {
-			const t = (Math.sin(state.clock.elapsedTime * FRAME_ALPHA.speed * Math.PI * 2) + 1) / 2;
+			const t = (Math.sin(pulseTimeRef.current * FRAME_ALPHA.speed * Math.PI * 2) + 1) / 2;
 			frameOpacity = THREE.MathUtils.lerp(FRAME_ALPHA.min, FRAME_ALPHA.max, t);
 			const mats = Array.isArray(frameMeshRef.current.material)
 				? frameMeshRef.current.material
